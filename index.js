@@ -49,7 +49,7 @@ var server = http.createServer(function(request, response) {
                 return;
             }
             for (var hook in this['hooks' + camelizedEventName]) {
-                hook.apply(this, params);
+                this['hooks' + camelizedEventName][hook].apply(this, params);
                 if (this.paused) {
                     var pending = this['hooks' + camelizedEventName].slice(this['hooks' + camelizedEventName].indexOf(hook) + 1);
                     for (var index in pending) {
@@ -66,7 +66,7 @@ var server = http.createServer(function(request, response) {
     console.log('Requesting ' + request.url);
 	var proxy_request = proxy.request(request.method, request.url.substr(request.headers['host'].length + 7), request.headers);
 	proxy_request.addListener('response', function(proxy_response) {
-        hooks_handler.pause();
+        //hooks_handler.pause();
 		proxy_response.addListener('data', function(chunk) {
             hooks_handler.callHooks('data', [response, chunk]);
 		});
